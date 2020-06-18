@@ -1,0 +1,21 @@
+{
+  "name": "rumur/wp-notice",
+  "description": "The OOP package to work with WordPress admin notices",
+  "keywords": ["wordpress", "notice"],
+  "homepage": "https://github.com/rumur/wp-notice",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "rumur",
+      "email": "rumur.dev@gmail.com"
+    }
+  ],
+  "autoload" : {
+    "psr-4" : {
+      "Rumur\\WordPress\\Notice\\": "src/"
+    }
+  },
+  "require": {
+    "php": ">=7.1.0"
+  }
+}
