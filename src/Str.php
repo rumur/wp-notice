@@ -61,12 +61,12 @@ class Str
     {
         $prepared = preg_replace_callback_array(
             [
-                '/[-_=~@\[\]()\"\\\']/i' => static function ($match) {
+                "/[\\\-_=~@\[\]()\"']/" => static function ($match) {
                     return ' ';
                 },
-                '/[A-Z]/' => static function ($match) {
+                "/[A-Z]/" => static function ($match) {
                     return ' ' . $match[0];
-                }
+                },
             ],
             trim($thing)
         );
