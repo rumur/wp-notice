@@ -1,7 +1,7 @@
 {
   "name": "rumur/wp-notice",
   "description": "The OOP package to work with WordPress admin notices",
-  "keywords": ["wordpress", "notice"],
+  "keywords": ["wordpress", "notice", "notifications"],
   "homepage": "https://github.com/rumur/wp-notice",
   "license": "MIT",
   "authors": [
@@ -16,6 +16,15 @@
     }
   },
   "require": {
-    "php": ">=7.1.0"
+    "php": ">=7.1.0",
+    "ext-json": "*"
+  },
+  "scripts": {
+    "test": "./vendor/bin/phpunit -v",
+    "sniff": "./vendor/bin/phpcs -v",
+    "sniff-fix": "./vendor/bin/phpcbf -v"
+  },
+  "require-dev": {
+    "squizlabs/php_codesniffer": "^3.5"
   }
 }
