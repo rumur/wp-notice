@@ -10,4 +10,14 @@ abstract class Noticeable
      * @return string
      */
     abstract public function message(): string;
+
+    /**
+     * Representation as a string
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->message();
+    }
 }
