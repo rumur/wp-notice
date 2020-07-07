@@ -30,18 +30,10 @@ class Conditions
         }, $conditionKeys, $conditions);
 
         // Combining keys with their evaluated result.
-        // End result will be e.g. [ 'role' => true, 'time' => false, ... ]
-        $merged = array_combine($conditionKeys, $conditionResults);
+        // End result will be e.g. [ 'role' => true, 'user' => true, ... ]
+        $evaluated = array_combine($conditionKeys, $conditionResults);
 
-        $checked = ! empty(array_filter($merged));
-
-        // if there is a `time` condition along with something else
-        // we'll check it with `AND` statement otherwise `OR` has been applied
-        if (isset($merged['time']) && count($merged) > 1) {
-            $checked = $checked && $merged['time'];
-        }
-
-        return $checked;
+        return !empty(array_filter($evaluated));
     }
 
     /**
@@ -95,27 +87,6 @@ class Conditions
     protected function checkTaxonomy(array $taxonomies): bool
     {
         return in_array($this->currentScreen()->taxonomy, $taxonomies, true);
-    }
-
-    /**
-     * Checks if the time slots are within desired time range.
-     *
-     * @param int[] $slots
-     *
-     * @uses \current_datetime
-     *
-     * @return bool
-     */
-    protected function checkTime(array $slots): bool
-    {
-        $now = \current_datetime()->getTimestamp();
-
-        $slots = array_merge([
-            'later' => $now,
-            'until' => $now,
-        ], $slots);
-
-        return $now >= $slots['later'] && $slots['later'] < $slots['until'];
     }
 
     /**
