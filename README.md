@@ -1,6 +1,10 @@
 # wp-notice
 The small OOP wrapper that allows working with WordPress notices nice and clean.
 
+### Minimum Requirements:
+ - PHP: 7.2+
+ - WordPress: 5.3+
+
 ## Installation
 
 ```composer require rumur/wp-notice```
