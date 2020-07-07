@@ -64,11 +64,9 @@ class Str
             return \wp_generate_uuid4();
         }
 
-        $cleaned = strtolower(preg_replace('/[\W]/', '', $thing));
-
-        if (function_exists('\\remove_accents')) {
-            $cleaned = \remove_accents($cleaned);
-        }
+        $cleaned = static::removeAccents(
+            strtolower(preg_replace('/[\W]/', '', $thing))
+        );
 
         if (mb_strlen($cleaned) < 32) {
             $cleaned = str_pad($cleaned, 32, md5($cleaned));
@@ -112,12 +110,24 @@ class Str
             return [];
         }
 
-        if (function_exists('\\remove_accents')) {
-            $prepared = \remove_accents($prepared);
-        }
+        $prepared = static::removeAccents($prepared);
 
         return array_filter(
             array_map('strtolower', explode(' ', $prepared))
         );
+    }
+
+    /**
+     * Converts all accent characters to ASCII characters.
+     *
+     * @param string $thing
+     * @uses \remove_accents
+     * @return string
+     */
+    public static function removeAccents(string $thing): string
+    {
+        return function_exists('\\remove_accents')
+            ? \remove_accents($thing)
+            : $thing;
     }
 }
