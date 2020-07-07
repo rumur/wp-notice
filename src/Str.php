@@ -65,7 +65,7 @@ class Str
         }
 
         $cleaned = static::removeAccents(
-            strtolower(preg_replace('/[\W]/', '', $thing))
+            strtolower(preg_replace('/[\W_]/', '', $thing))
         );
 
         if (mb_strlen($cleaned) < 32) {
@@ -96,7 +96,7 @@ class Str
     {
         $prepared = preg_replace_callback_array(
             [
-                "/[\W]/" => static function ($match) {
+                "/[\W_]/" => static function ($match) {
                     return ' ';
                 },
                 "/[A-Z]/" => static function ($match) {
