@@ -49,6 +49,43 @@ class Str
     }
 
     /**
+     * Makes a `uuid` from a string or makes a new uuid
+     *
+     * @param null|string $thing
+     *
+     * @uses \remove_accents
+     * @uses \wp_generate_uuid4
+     *
+     * @return string
+     */
+    public static function uuid(?string $thing = null): string
+    {
+        if (! $thing && function_exists('\\wp_generate_uuid4')) {
+            return \wp_generate_uuid4();
+        }
+
+        $cleaned = strtolower(preg_replace('/[\W]/', '', $thing));
+
+        if (function_exists('\\remove_accents')) {
+            $cleaned = \remove_accents($cleaned);
+        }
+
+        if (mb_strlen($cleaned) < 32) {
+            $cleaned = str_pad($cleaned, 32, md5($cleaned));
+        }
+
+        if (mb_strlen($cleaned) > 32) {
+            $cleaned = mb_substr($cleaned, 0, 32);
+        }
+
+        $replacement = '${1}-${2}-${3}-${4}-${5}';
+
+        $regexp = '/^([0-9a-z]{8})([0-9a-z]{4})([0-9a-z]{4})([0-9a-z]{4})([0-9a-z]{12})$/';
+
+        return preg_replace($regexp, $replacement, $cleaned);
+    }
+
+    /**
      * Makes tokens from a string.
      *
      * @param string $thing
@@ -61,7 +98,7 @@ class Str
     {
         $prepared = preg_replace_callback_array(
             [
-                "/[\\\-_=~@\[\]()\"']/" => static function ($match) {
+                "/[\W]/" => static function ($match) {
                     return ' ';
                 },
                 "/[A-Z]/" => static function ($match) {
