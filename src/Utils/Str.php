@@ -1,6 +1,6 @@
 <?php
 
-namespace Rumur\WordPress\Notice;
+namespace Rumur\WordPress\Notice\Utils;
 
 class Str
 {
@@ -49,7 +49,9 @@ class Str
     }
 
     /**
-     * Makes a `uuid` from a string or makes a new uuid
+     * Makes a `uuid` from a string or makes a new uuid.
+     *
+     * It can make a new uuid id a WordPress `wp_generate_uuid4` function is available.
      *
      * @param null|string $thing
      *
@@ -60,8 +62,13 @@ class Str
      */
     public static function uuid(?string $thing = null): string
     {
-        if (! $thing && function_exists('\\wp_generate_uuid4')) {
-            return \wp_generate_uuid4();
+        if (! $thing) {
+
+            if (function_exists('\\wp_generate_uuid4')) {
+                return \wp_generate_uuid4();
+            }
+
+            throw new \RuntimeException('Seems the `wp_generate_uuid4` function is not available.');
         }
 
         $cleaned = static::removeAccents(
@@ -87,8 +94,6 @@ class Str
      * Makes tokens from a string.
      *
      * @param string $thing
-     *
-     * @uses \remove_accents
      *
      * @return array
      */
@@ -119,6 +124,8 @@ class Str
 
     /**
      * Converts all accent characters to ASCII characters.
+     *
+     * It can remove the accent only if a WordPress `remove_accents` function is available.
      *
      * @param string $thing
      * @uses \remove_accents
