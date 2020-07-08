@@ -1,6 +1,6 @@
 <?php
 
-namespace Rumur\WordPress\Notice;
+namespace Rumur\WordPress\Notice\Utils;
 
 class Time
 {
