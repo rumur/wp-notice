@@ -20,7 +20,7 @@ class Conditions
 
         $conditionResults = array_map(function ($condition, $values) {
 
-            $methodName = Str::pascal($condition); // "post_type"|"post-type" -> 'PostType'
+            $methodName = Utils\Str::pascal($condition); // "post_type"|"post-type" -> 'PostType'
 
             if (method_exists($this, $method = "check{$methodName}")) {
                 return $this->$method($values);
