@@ -76,9 +76,9 @@ class Repository
     }
 
     /**
-     * @param PendingNotice $notice
+     * Adds to a repository a new instance of PendingNotice.
      *
-     * @uses \esc_sql
+     * @param PendingNotice $notice
      *
      * @return static
      */
@@ -116,12 +116,15 @@ class Repository
     }
 
     /**
-     * @param string $hash
-     * @return bool|mixed
+     * Checks whether repository has a notice or not.
+     *
+     * @param string $hash  The Notice hash.
+     *
+     * @return bool
      */
-    public function has(string $hash)
+    public function has(string $hash): bool
     {
-        return $this->notices[$hash] ?? false;
+        return isset($this->notices[$hash]);
     }
 
     /**
