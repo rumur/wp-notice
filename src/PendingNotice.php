@@ -98,6 +98,20 @@ class PendingNotice implements \Serializable
     }
 
     /**
+     * Merges attributes with existed ones.
+     *
+     * @param array $attributes
+     *
+     * @return static
+     */
+    public function merge(array $attributes)
+    {
+        $this->attributes = array_merge($attributes, $this->attributes);
+
+        return $this;
+    }
+
+    /**
      * Makes the notification be nag and show again and again.
      *
      * Note, if `DISABLE_NAG_NOTICES` is set to `true` your nag notices will be showed once.
@@ -175,6 +189,18 @@ class PendingNotice implements \Serializable
     public function type(): string
     {
         return $this->attributes['type'] ?? 'error';
+    }
+
+    /**
+     * Tells do not wrap with <p>content</p>
+     *
+     * @return static
+     */
+    public function withoutWrapping()
+    {
+        $this->attributes['no-wpautop'] = true;
+
+        return $this;
     }
 
     /**
