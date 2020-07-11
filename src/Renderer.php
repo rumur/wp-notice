@@ -13,7 +13,9 @@ class Renderer
      */
     public function render(PendingNotice $notice): void
     {
-        $desiredClasses = $notice->attributes()['classes'] ?? [];
+        $attributes = $notice->attributes();
+
+        $desiredClasses = $attributes['classes'] ?? [];
         $conditionClasses = array_keys(
             array_filter([
                 'notice-' . $notice->type() => true,
@@ -35,6 +37,10 @@ class Renderer
 
         if (is_callable($message)) {
             $message = call_user_func($message, $notice);
+        }
+
+        if (function_exists('\\wpautop')) {
+            $message = isset($attributes['no-wpautop']) ? $message : \wpautop($message);
         }
 
         printf(
