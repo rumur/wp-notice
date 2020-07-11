@@ -136,7 +136,9 @@ class Repository
      */
     public function flush()
     {
-        $this->isFlushed = \delete_site_option($this->storageKey);
+        $this->isFlushed = true;
+
+        \delete_site_option($this->storageKey);
 
         return $this;
     }
