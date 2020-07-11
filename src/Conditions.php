@@ -39,17 +39,27 @@ class Conditions
     /**
      * Checks if the current screen is on a correct page.
      *
-     * @param array $values
+     * @param array $pages
      *
      * @return bool
      */
-    protected function checkPage(array $values): bool
+    protected function checkPage(array $pages): bool
     {
-        return ! empty(array_intersect($values, [
+        return ! empty(array_intersect($pages, $this->currentPages()));
+    }
+
+    /**
+     * Retrieves current possible pages.
+     *
+     * @return array
+     */
+    protected function currentPages(): array
+    {
+        return [
             $this->currentScreen()->base,
             $this->currentScreen()->parent_base,
-            $this->currentScreen()->parent_file,
-        ]));
+            $this->currentScreen()->parent_file
+        ];
     }
 
     /**
@@ -60,7 +70,17 @@ class Conditions
      */
     protected function checkPostType(array $types): bool
     {
-        return in_array($this->currentScreen()->post_type, $types, true);
+        return in_array($this->currentPostType(), $types, true);
+    }
+
+    /**
+     * Retrieves current possible post type name.
+     *
+     * @return string
+     */
+    protected function currentPostType(): string
+    {
+        return $this->currentScreen()->post_type;
     }
 
     /**
@@ -86,7 +106,17 @@ class Conditions
      */
     protected function checkTaxonomy(array $taxonomies): bool
     {
-        return in_array($this->currentScreen()->taxonomy, $taxonomies, true);
+        return in_array($this->currentTaxonomy(), $taxonomies, true);
+    }
+
+    /**
+     * Retrieves current possible taxonomy name.
+     *
+     * @return string
+     */
+    protected function currentTaxonomy(): string
+    {
+        return $this->currentScreen()->taxonomy;
     }
 
     /**
