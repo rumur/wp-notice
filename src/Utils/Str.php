@@ -63,7 +63,6 @@ class Str
     public static function uuid(?string $thing = null): string
     {
         if (! $thing) {
-
             if (function_exists('\\wp_generate_uuid4')) {
                 return \wp_generate_uuid4();
             }
