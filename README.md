@@ -26,24 +26,24 @@ add_action('admin_notices', [\Rumur\WordPress\Notice\Notice::class, 'render']);
  * @return string    
  */
 function rmr_notice_as_function() {
-    return '<p>Hello From Function</p>';
+    return __('Hello From Function', 'text-domain');
 }
 
 ```
 
 ```php
 <?php
-// App/Notices/SimpleNotification.php
+// App/Notices/ExampleNotification.php
 
 namespace App\Notices;
 
 use Rumur\WordPress\Notice\Noticeable;
 
-class SimpleNotification extends Noticeable
+class ExampleNotification extends Noticeable
 {
     public function message(): string
     {
-        return '<p>I can change the info here</p>';
+        return __('I can change the info here', 'text-domain');
     }
 }
 ```
@@ -56,15 +56,18 @@ Each of these methods could take as a param either a `string` or `Noticeable` or
 ```php
 <?php
 
-use App\Notices\SimpleNotification;
+use App\Notices\ExampleNotification;
 use App\Domain\Orders\OrderRepository;
 use Rumur\WordPress\Notice\Notice;
 
 $order = OrderRepository::find(2020); 
 
 if ($order->isPayed()) {
+    // Simple way.
+    Notice::info(__('Congrats', 'text-domain'));
+
     // Makes a success message from the Noticeable instance
-    Notice::success(new SimpleNotification)
+    Notice::success(new ExampleNotification)
         // ⚠️ OPTIONAL ⚠️
         // Will be always displaying the notice, 
         // unless `DISABLE_NAG_NOTICES` defined and it's set as `true`
