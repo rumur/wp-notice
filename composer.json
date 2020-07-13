@@ -30,7 +30,7 @@
       "providers": [
         "Rumur\\WordPress\\Notice\\NoticeServiceProvider"
       ]
-    },
+    }
   },
   "scripts": {
     "test": "./vendor/bin/phpunit -v",
