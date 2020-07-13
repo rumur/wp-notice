@@ -9,16 +9,34 @@ The small OOP wrapper that allows working with WordPress notices nice and clean.
 
 ```composer require rumur/wp-notice```
 
+### Themosis 2.x
+```php console vendor:publish --provider='Rumur\WordPress\Notice\NoticeServiceProvider'```
+
+### Sage 10.x
+```wp acorn vendor:publish --provider='Rumur\WordPress\Notice\NoticeServiceProvider'```
+
 ### Register into WordPress
 It registers the renderer functionality, that will display all notifications added by the package. 
 ```php
 <?php
 // functions.php
 
+// Clean WordPress installation.
 \Rumur\WordPress\Notice\Notice::registerIntoWordPress();
 
 // Alternative way of doing this.
 add_action('admin_notices', [\Rumur\WordPress\Notice\Notice::class, 'render']); 
+
+// Themosis 2.x or Sage 10.x Installation, after you've used `vendor:publish` command.
+\Notice::registerIntoWordPress();
+
+// Or there is another alternative way.
+// Themosis 2.x or Sage 10.x Only
+\Rumur\WordPress\Notice\Facades\Notice::registerIntoWordPress();
+
+// Or even as a function
+// Themosis 2.x or Sage 10.x Only
+notice()->registerIntoWordPress();
 
 /**
  * The notice function that just need to return a string.
