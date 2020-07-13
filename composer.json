@@ -30,14 +30,6 @@
       "providers": [
         "Rumur\\WordPress\\Notice\\NoticeServiceProvider"
       ]
-    },
-    "laravel": {
-      "aliases": {
-        "Notice": "Rumur\\WordPress\\Notice\\Facades\\Notice"
-      },
-      "providers": [
-        "Rumur\\WordPress\\Notice\\NoticeServiceProvider"
-      ]
     }
   },
   "scripts": {
