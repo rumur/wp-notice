@@ -1,6 +1,6 @@
 {
   "name": "rumur/wp-notice",
-  "description": "The OOP package to work with WordPress admin notices",
+  "description": "The OOP package to work with WordPress notices",
   "keywords": ["wordpress", "notice", "notifications"],
   "homepage": "https://github.com/rumur/wp-notice",
   "license": "MIT",

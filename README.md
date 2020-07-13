@@ -133,8 +133,8 @@ if ($order->isPayed()) {
 | `->showWhenTaxonomy(...string);`  | Tells to show when the current screen is for specific taxonomies             |
 | `->showWhenPostType(...string);`  | Tells to show when the current screen is for specific post types             |
 | `->showWhenUser(...int/WP_User);` | Tells to show when the current user is mentioned                             | 
-| `->showLater(...string/int(timestamp)/DateTimeInterface);`     | Tells to show the notice later when it's time   |
-| `->showWhenUntil(...string/int(timestamp)/DateTimeInterface);` | Tells to show the notice until it's time        |
+| `->showLater(...string/int(timestamp)/DateTimeInterface);` | Tells to show the notice later when it's time       |
+| `->showUntil(...string/int(timestamp)/DateTimeInterface);` | Tells to show the notice until it's time            |
 
 >Note, that all conditions are using `OR` operator to check, but if there is a time condition than it'll switch to `AND` instead.  
 
