@@ -13,11 +13,24 @@
   "autoload" : {
     "psr-4" : {
       "Rumur\\WordPress\\Notice\\": "src/"
-    }
+    },
+    "files": [
+      "src/helpers.php"
+    ]
   },
   "require": {
     "php": ">=7.1.0",
     "ext-json": "*"
+  },
+  "extra": {
+    "acorn": {
+      "aliases": {
+        "Notice": "Rumur\\WordPress\\Notice\\Facades\\Notice"
+      },
+      "providers": [
+        "Rumur\\WordPress\\Notice\\NoticeServiceProvider"
+      ]
+    },
   },
   "scripts": {
     "test": "./vendor/bin/phpunit -v",
