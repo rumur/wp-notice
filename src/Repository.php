@@ -67,7 +67,7 @@ class Repository
     protected function boot()
     {
         if (! $this->isBooted) {
-            $this->notices = \get_site_option($this->storageKey, []);
+            $this->notices = array_filter((array)\get_site_option($this->storageKey, []));
         }
 
         $this->isBooted = true;
