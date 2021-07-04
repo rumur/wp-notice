@@ -55,7 +55,7 @@ class PendingNotice implements \Serializable
         $tokens = [
             $this->type(),
             json_encode($this->attributes),
-            json_encode($this->conditions),
+            json_encode($this->stripTimestampsFromConditions()),
             json_encode(is_object($this->message)
                 ? get_class($this->message)
                 : $this->message),
