@@ -84,7 +84,13 @@ class Repository
      */
     public function add(PendingNotice $notice)
     {
-        $this->notices[$notice->hash()] = $notice;
+	    // prevent notice with time conditions being overridden by newer version of itself.
+	    // if it's already exist, in that case a new timestamp will take affect, not the original one.
+	    if ($this->has( $hash = $notice->hash() ) && $notice->hasTimeConditions()) {
+		    return $this;
+	    }
+
+	    $this->notices[ $hash ] = $notice;
 
         return $this;
     }
