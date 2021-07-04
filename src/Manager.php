@@ -52,23 +52,20 @@ class Manager
         // @link https://codex.wordpress.org/Plugin_API/Action_Reference/admin_notices#Disable_Nag_Notices
         $shouldIgnoreNag = defined('DISABLE_NAG_NOTICES') && DISABLE_NAG_NOTICES;
 
-        /** @var PendingNotice $notice */
-        foreach ($all as $hash => $notice) {
-            $isRendered = false;
+	    /** @var PendingNotice $notice */
+	    foreach ($all as $hash => $notice) {
 
-            $shouldRender = !$notice->shouldBeShownLater() && ($this->checkConditions($notice->conditions()));
+		    $isShowTime = !$notice->shouldBeShownLater();
 
-            if ($shouldRender) {
-                $isRendered = true;
-                $this->renderer->render($notice);
-            }
+		    if ($isShowTime && $this->checkConditions($notice->conditions())) {
 
-            $canBeDeletedCauseTime = $notice->isExpired() && !$notice->shouldBeShownLater();
+			    $this->renderer->render($notice);
 
-            if ($isRendered && $canBeDeletedCauseTime && ($shouldIgnoreNag || !$notice->isNag())) {
-                $this->repository->delete($hash);
-            }
-        }
+			    if ($notice->isExpired() && ( $shouldIgnoreNag || ! $notice->isNag() )) {
+				    $this->repository->delete($hash);
+			    }
+		    }
+	    }
     }
 
     /**
@@ -127,14 +124,14 @@ class Manager
      */
     public function add($notice, $type = 'error', $dismissible = false): PendingNotice
     {
+        if (function_exists('\\is_wp_error') && \is_wp_error($notice)) {
+            $notice = $notice->get_error_message();
+        }
+
         if (! is_string($notice) && ! $notice instanceof Noticeable) {
             throw new \InvalidArgumentException(
                 '`$notice` wrong type, expected either `string` or ' . Noticeable::class
             );
-        }
-
-        if (function_exists('\\is_wp_error') && \is_wp_error($notice)) {
-            $notice = $notice->get_error_message();
         }
 
         if (! $this->isTypeValid($type)) {
