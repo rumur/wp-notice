@@ -54,16 +54,19 @@ class Manager
 
 	    /** @var PendingNotice $notice */
 	    foreach ($all as $hash => $notice) {
+		    try {
+			    $isShowTime = !$notice->shouldBeShownLater();
 
-		    $isShowTime = !$notice->shouldBeShownLater();
+			    if ($isShowTime && $this->checkConditions($notice->conditions())) {
 
-		    if ($isShowTime && $this->checkConditions($notice->conditions())) {
+				    $this->renderer->render($notice);
 
-			    $this->renderer->render($notice);
-
-			    if ($notice->isExpired() && ( $shouldIgnoreNag || ! $notice->isNag() )) {
-				    $this->repository->delete($hash);
+				    if ($notice->isExpired() && ( $shouldIgnoreNag || ! $notice->isNag() )) {
+					    $this->repository->delete($hash);
+				    }
 			    }
+		    } catch (Exceptions\NoticeWasCorrupted $err) {
+			    $this->repository->delete($hash);
 		    }
 	    }
     }
