@@ -31,6 +31,12 @@ class Renderer
 
         $message = $notice->message();
 
+	    // It might happen when Notice Class has been deleted from a codebase,
+	    // but still present in the store.
+	    if ($message instanceof \__PHP_Incomplete_Class) {
+		    throw new Exceptions\NoticeWasCorrupted( 'Not Exists.' );
+	    }
+
         if ($message instanceof Noticeable) {
             $message = [$message, 'message'];
         }

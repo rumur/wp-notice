@@ -16,22 +16,25 @@ class Conditions
             return true;
         }
 
-        $conditionKeys = array_keys($conditions);
+	    // Skipping Time, since we need to check the rest, but time will give us always true.
+	    $noTimeConditions = array_diff_key( $conditions, [ 'time' => true ] );
 
-        $conditionResults = array_map(function ($condition, $values) {
+	    $conditionKeys = array_keys($noTimeConditions);
 
-            $methodName = Utils\Str::pascal($condition); // "post_type"|"post-type" -> 'PostType'
+	    $conditionResults = array_map(function ($condition, $values) {
 
-            if (method_exists($this, $method = "check{$methodName}")) {
-                return $this->$method($values);
-            }
+		    $methodName = Utils\Str::pascal($condition); // "post_type"|"post-type" -> 'PostType'
 
-            return true;
-        }, $conditionKeys, $conditions);
+		    if (method_exists($this, $method = "check{$methodName}")) {
+			    return $this->$method($values);
+		    }
 
-        // Combining keys with their evaluated result.
-        // End result will be e.g. [ 'role' => true, 'user' => true, ... ]
-        $evaluated = array_combine($conditionKeys, $conditionResults);
+		    return true;
+	    }, $conditionKeys, $noTimeConditions);
+
+	    // Combining keys with their evaluated result.
+	    // End result will be e.g. [ 'role' => true, 'user' => true, ... ]
+	    $evaluated = array_combine($conditionKeys, $conditionResults);
 
         return !empty(array_filter($evaluated));
     }
@@ -46,6 +49,18 @@ class Conditions
     protected function checkPage(array $pages): bool
     {
         return ! empty(array_intersect($pages, $this->currentPages()));
+    }
+
+    /**
+     * Checks if the current screen is not mention pages.
+     *
+     * @param array $pages
+     *
+     * @return bool
+     */
+    protected function checkPageNot(array $pages): bool
+    {
+        return ! $this->checkPage($pages);
     }
 
     /**
@@ -73,6 +88,17 @@ class Conditions
         return in_array($this->currentPostType(), $types, true);
     }
 
+	/**
+	 * Checks if the screen is on right post type.
+	 *
+	 * @param string[] $types
+	 * @return bool
+	 */
+	protected function checkPostTypeNot(array $types): bool
+	{
+		return !$this->checkPostType($types);
+	}
+
     /**
      * Retrieves current possible post type name.
      *
@@ -97,6 +123,20 @@ class Conditions
         return ! empty(array_filter($roles, '\\current_user_can'));
     }
 
+	/**
+	 * Checks if the current user doesn't have a desired role.
+	 *
+	 * @param string[] $roles
+	 *
+	 * @uses \current_user_can
+	 *
+	 * @return bool
+	 */
+	protected function checkRoleNot(array $roles): bool
+	{
+		return ! $this->checkRole($roles);
+	}
+
     /**
      * Checks if the screen is on right taxonomy.
      *
@@ -108,6 +148,18 @@ class Conditions
     {
         return in_array($this->currentTaxonomy(), $taxonomies, true);
     }
+
+	/**
+	 * Checks if the screen is not on the one of taxonomies.
+	 *
+	 * @param string[] $taxonomies
+	 *
+	 * @return bool
+	 */
+	protected function checkTaxonomyNot(array $taxonomies): bool
+	{
+		return !$this->checkTaxonomy($taxonomies);
+	}
 
     /**
      * Retrieves current possible taxonomy name.
@@ -131,6 +183,20 @@ class Conditions
     protected function checkUser(array $userIds): bool
     {
         return in_array(\get_current_user_id(), $userIds, true);
+    }
+
+    /**
+     * Checks if the current user id is not one from the list.
+     *
+     * @param int[] $userIds
+     *
+     * @uses \get_current_user_id
+     *
+     * @return bool
+     */
+    protected function checkUserNot(array $userIds): bool
+    {
+        return !$this->checkUser($userIds);
     }
 
     /**

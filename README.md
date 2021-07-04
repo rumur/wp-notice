@@ -129,10 +129,15 @@ if ($order->isPayed()) {
 | `->nag();`                        | Makes nag notice                                                             |
 | `->dismissible();`                | Makes be closable/dismissible                                                |
 | `->showWhenRole(...string);`      | Tells to show when the current user role is mentioned                        |
+| `->showWhenRoleNot(...string);`   | Tells to show when the current user role is not in a mentioned list          |
 | `->showWhenPage(...string);`      | Tells to show when the current screen page is mentioned                      |
+| `->showWhenPageNot(...string);`   | Tells to show when the current screen page is not in a mentioned list        |
 | `->showWhenTaxonomy(...string);`  | Tells to show when the current screen is for specific taxonomies             |
+| `->showWhenTaxonomyNot(...string);` | Tells to show when the current screen is not for taxonomies mentioned in a list |
 | `->showWhenPostType(...string);`  | Tells to show when the current screen is for specific post types             |
+| `->showWhenPostTypeNot(...string);` | Tells to show when the current screen is not for post types mentioned in a list |
 | `->showWhenUser(...int/WP_User);` | Tells to show when the current user is mentioned                             | 
+| `->showWhenUserNot(...int/WP_User);` | Tells to show when the current user is not in a mentioned list            | 
 | `->showLater(...string/int(timestamp)/DateTimeInterface);` | Tells to show the notice later when it's time       |
 | `->showUntil(...string/int(timestamp)/DateTimeInterface);` | Tells to show the notice until it's time            |
 

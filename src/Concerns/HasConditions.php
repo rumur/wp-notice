@@ -44,6 +44,27 @@ trait HasConditions
         return $this;
     }
 
+	/**
+	 * Will be shown for all users except mention ones.
+	 *
+	 * @param int|\WP_User ...$users
+	 *
+	 * @return $this
+	 */
+	public function showWhenUserNot(...$users): self
+	{
+		$users_ids = array_map(static function ($user) {
+			if (class_exists('\\WP_User') && $user instanceof \WP_User) {
+				return $user->ID;
+			}
+			return $user;
+		}, $users);
+
+		$this->conditions['user_not'] = array_merge($this->conditions['user_not'] ?? [], $users_ids);
+
+		return $this;
+	}
+
     /**
      * Will be shown for a specific user role only.
      *
@@ -64,6 +85,27 @@ trait HasConditions
 
         return $this;
     }
+
+	/**
+	 * Will be shown for all user roles except mention ones.
+	 *
+	 * This condition is gonna check the `current_user` role and if it matches it will be shown then.
+	 *
+	 * @param string ...$roles
+	 *
+	 * @return $this
+	 * @uses \get_role
+	 *
+	 */
+	public function showWhenRoleNot(string ...$roles): self
+	{
+		$this->conditions['role_not'] = array_merge(
+			$this->conditions['role_not'] ?? [],
+			array_filter($roles, '\\get_role')
+		);
+
+		return $this;
+	}
 
     /**
      * Will be shown for a specific `post_type` only.
@@ -86,6 +128,27 @@ trait HasConditions
         return $this;
     }
 
+	/**
+	 * Will be shown for all `post_type` except mention ones.
+	 *
+	 * This condition is gonna check the `current_screen->post_type` and if it matches it will be shown then.
+	 *
+	 * @param string ...$postTypes
+	 *
+	 * @return $this
+	 * @uses \post_type_exists
+	 *
+	 */
+	public function showWhenPostTypeNot(string ...$postTypes): self
+	{
+		$this->conditions['post_type_not'] = array_merge(
+			$this->conditions['post_type_not'] ?? [],
+			array_filter($postTypes, '\\post_type_exists')
+		);
+
+		return $this;
+	}
+
 
     /**
      * Will be shown for a specific `page` only.
@@ -102,6 +165,22 @@ trait HasConditions
 
         return $this;
     }
+
+	/**
+	 * Will be shown for all pages except mention ones.
+	 *
+	 * This condition is gonna check the `current_screen` page and if it matches it will be shown then.
+	 *
+	 * @param string ...$pages
+	 *
+	 * @return $this
+	 */
+	public function showWhenPageNot(string ...$pages): self
+	{
+		$this->conditions['page_not'] = array_merge($this->conditions['page_not'] ?? [], $pages);
+
+		return $this;
+	}
 
     /**
      * Will be shown for a specific `taxonomy` only.
@@ -122,6 +201,25 @@ trait HasConditions
         return $this;
     }
 
+	/**
+	 * Will be shown for all taxonomies except mention ones.
+	 *
+	 * @param string ...$taxonomies
+	 *
+	 * @return $this
+	 * @uses \taxonomy_exists
+	 *
+	 */
+	public function showWhenTaxonomyNot(string ...$taxonomies): self
+	{
+		$this->conditions['taxonomy_not'] = array_merge(
+			$this->conditions['taxonomy_not'] ?? [],
+			array_filter($taxonomies, '\\taxonomy_exists')
+		);
+
+		return $this;
+	}
+
     /**
      * Will be shown a notice later when its time.
      *
@@ -141,7 +239,10 @@ trait HasConditions
      */
     public function showLater($when)
     {
-        $this->conditions['time']['later'] = Time::toTimestamp($when);
+	    $this->conditions['time']['later'] = [
+		    'ts' => Time::toTimestamp($when),
+		    'origin' => $when,
+	    ];
 
         return $this;
     }
@@ -158,7 +259,7 @@ trait HasConditions
             return false;
         }
 
-        return Time::now()->getTimestamp() < $this->conditions['time']['later'];
+	    return Time::now()->getTimestamp() < $this->conditions['time']['later']['ts'];
     }
 
     /**
@@ -180,7 +281,10 @@ trait HasConditions
      */
     public function showUntil($until)
     {
-        $this->conditions['time']['until'] = Time::toTimestamp($until);
+	    $this->conditions['time']['until'] = [
+		    'ts' => Time::toTimestamp($until),
+		    'origin' => $until
+	    ];
 
         return $this;
     }
@@ -198,7 +302,7 @@ trait HasConditions
             return true;
         }
 
-        return Time::now()->getTimestamp() > $this->conditions['time']['until'];
+	    return Time::now()->getTimestamp() > $this->conditions['time']['until']['ts'];
     }
 
     /**
@@ -208,4 +312,28 @@ trait HasConditions
     {
         return isset($this->conditions['time']);
     }
+
+	/**
+	 * Strips timestamps from conditions.
+	 *
+	 * @return array
+	 */
+	public function stripTimestampsFromConditions(): array
+	{
+		$conditions = $this->conditions;
+
+		if (! $this->hasTimeConditions()) {
+			return $conditions;
+		}
+
+		if (isset($conditions['time']['later'])) {
+			$conditions['time']['later']['ts'] = '';
+		}
+
+		if (isset($conditions['time']['until'])) {
+			$conditions['time']['until']['ts'] = '';
+		}
+
+		return $conditions;
+	}
 }
